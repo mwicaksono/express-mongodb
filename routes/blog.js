@@ -17,21 +17,21 @@ router.get('/new-post', async function (req, res) {
 });
 
 router.post('/posts', async (req, res) => {
-  const authorId = new ObjectId(req.body.author)
+  const authorId = new ObjectId(req.body.author);
   const author = await db.getDb().collection('authors').findOne({ _id: authorId });
-
-  const data = {
+  const postData = {
     title: req.body.title,
     summary: req.body.summary,
     body: req.body.content,
-    date: new Date().toISOString,
-    authors: {
+    author: {
       id: authorId,
-      name: author.name
+      name: author.name,
+      email: author.email
     }
-  }
+  };
 
-  await db.getDb().collection('posts').insertOne(data);
+  const result = await db.getDb().collection('posts').insertOne(postData);
+  console.log(result);
   res.redirect('/posts');
 })
 
